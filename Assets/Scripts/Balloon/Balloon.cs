@@ -1,22 +1,19 @@
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(Animator))]
 class Balloon : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private SpriteRenderer _renderer;
+    private Animator _animator;
 
     private void Start()
     {
-
+        _animator = GetComponent<Animator>();
     }
 
-    public void ChangeSprite(Sprite sprite)
-    {
-        _renderer.sprite = sprite;
-    }
     public void Blow()
     {
-        Destroy(gameObject);
+        _animator.SetTrigger(nameof(Blow));
+
+        Destroy(gameObject, 1f);
     }
 }
