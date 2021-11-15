@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+
+using System.Collections;
 
 using UnityEngine;
 
@@ -10,6 +12,7 @@ class BalloonSpawner : MonoBehaviour
     [SerializeField] private float _spawnRate;
     [SerializeField] private float _spawnRange;
 
+    public event Action<Balloon> Spawned;
     public bool IsSpawning => _coroutine != null;
 
     private Coroutine _coroutine;
@@ -43,13 +46,14 @@ class BalloonSpawner : MonoBehaviour
     private void Spawn()
     {
         var position = GetRandomPosition();
+        var ballon = Instantiate(_prefab, position, Quaternion.identity);
 
-        Instantiate(_prefab, position, Quaternion.identity);
+        Spawned?.Invoke(ballon);
     }
 
     private Vector2 GetRandomPosition()
     {
-        var offset = Random.Range(-_spawnRange, _spawnRange);
+        var offset = UnityEngine.Random.Range(-_spawnRange, _spawnRange);
         var position = new Vector2(transform.position.x + offset, transform.position.y);
 
         return position;
