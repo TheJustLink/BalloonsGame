@@ -10,10 +10,13 @@ using Lean.Touch;
 class Balloon : LeanSelectableByFingerBehaviour, IDamageable
 {
     public event Action<Balloon> Blowed;
+    public event Action<Balloon> OutOfScreen;
+    public event Action<Balloon> Destroying;
 
     private Animator _animator;
     private AudioSource _audioSource;
     private Rigidbody2D _rigidbody;
+    private Camera _camera;
 
     private bool _isBlowing;
     private float _gravityScale;
@@ -25,8 +28,19 @@ class Balloon : LeanSelectableByFingerBehaviour, IDamageable
         _animator = GetComponent<Animator>();
         _audioSource = GetComponent<AudioSource>();
         _rigidbody = GetComponent<Rigidbody2D>();
+        _camera = Camera.main;
 
         _gravityScale = _rigidbody.gravityScale;
+    }
+    private void OnDestroy()
+    {
+        Destroying?.Invoke(this);
+    }
+
+    private void FixedUpdate()
+    {
+        if (IsOutOfScreen())
+            OnOutOfScreen();
     }
 
     public void Destroy()
@@ -36,6 +50,17 @@ class Balloon : LeanSelectableByFingerBehaviour, IDamageable
     public void ApplyDamage()
     {
         Blow();
+    }
+
+    public void Blow()
+    {
+        if (_isBlowing) return;
+        _isBlowing = true;
+
+        StartBlowAnimation();
+        DisablePhysics();
+
+        Blowed?.Invoke(this);
     }
 
     protected override void OnSelected()
@@ -51,21 +76,15 @@ class Balloon : LeanSelectableByFingerBehaviour, IDamageable
         transform.localScale = Vector3.one;
     }
 
-    private void Blow()
-    {
-        if (_isBlowing) return;
-        _isBlowing = true;
-
-        StartBlowAnimation();
-        DisableGravity();
-
-        Blowed?.Invoke(this);
-    }
     private void StartBlowAnimation()
     {
         _animator.SetTrigger(nameof(Blow));
     }
 
+    private void DisablePhysics()
+    {
+        _rigidbody.simulated = false;
+    }
     private void DisableGravity()
     {
         _rigidbody.isKinematic = true;
@@ -77,5 +96,20 @@ class Balloon : LeanSelectableByFingerBehaviour, IDamageable
     {
         _rigidbody.gravityScale = _gravityScale;
         _rigidbody.isKinematic = false;
+    }
+
+    private void OnOutOfScreen()
+    {
+        OutOfScreen?.Invoke(this);
+
+        Destroy();
+    }
+    private bool IsOutOfScreen()
+    {
+        var position = (Vector2)transform.position;
+        var cameraUpPoint = _camera.ViewportToWorldPoint(Vector2.one);
+        var isOut = position.y > cameraUpPoint.y;
+
+        return isOut;
     }
 }
