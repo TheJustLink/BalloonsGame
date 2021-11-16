@@ -6,11 +6,7 @@ using UnityEngine;
 
 class BalloonSpawner : MonoBehaviour
 {
-    [Header("References")]
-    [SerializeField] private Balloon _prefab;
-    [Header("Parameters")]
-    [SerializeField] private float _spawnRate;
-    [SerializeField] private float _spawnRange;
+    [SerializeField] private BalloonSpawnerData _data;
 
     public event Action<Balloon> Spawned;
     public bool IsSpawning => _coroutine != null;
@@ -33,27 +29,31 @@ class BalloonSpawner : MonoBehaviour
 
     private IEnumerator Spawning()
     {
-        var cooldownTime = 1f / _spawnRate;
-        var cooldown = new WaitForSeconds(cooldownTime);
+        var cooldownTime = 1f / _data.SpawnRate;
+        var acceleration = _data.SpawnRateAcceleration;
 
         while(true)
         {
             Spawn();
 
-            yield return cooldown;
+            yield return new WaitForSeconds(cooldownTime);
+
+            if (cooldownTime > 0.25f)
+                cooldownTime -= acceleration;
         }
     }
     private void Spawn()
     {
         var position = GetRandomPosition();
-        var ballon = Instantiate(_prefab, position, Quaternion.identity);
+        var ballon = Instantiate(_data.BalloonPrefab, position, Quaternion.identity);
 
         Spawned?.Invoke(ballon);
     }
 
     private Vector2 GetRandomPosition()
-    {
-        var offset = UnityEngine.Random.Range(-_spawnRange, _spawnRange);
+{
+        var spawnRange = _data.SpawnRange;
+        var offset = UnityEngine.Random.Range(-spawnRange, spawnRange);
         var position = new Vector2(transform.position.x + offset, transform.position.y);
 
         return position;
@@ -61,8 +61,9 @@ class BalloonSpawner : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        var leftPoint = new Vector2(transform.position.x - _spawnRange, transform.position.y);
-        var rightPoint = new Vector2(transform.position.x + _spawnRange, transform.position.y);
+        var spawnRange = _data.SpawnRange;
+        var leftPoint = new Vector2(transform.position.x - spawnRange, transform.position.y);
+        var rightPoint = new Vector2(transform.position.x + spawnRange, transform.position.y);
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(leftPoint, rightPoint);

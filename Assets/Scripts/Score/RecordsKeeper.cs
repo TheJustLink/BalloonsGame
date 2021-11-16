@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
@@ -13,6 +14,8 @@ class RecordsKeeper : IEnumerable<Record>
     }
 
     public IReadOnlyList<Record> Records => _records;
+    public IEnumerable<Record> SortedRecords
+        => _records.OrderByDescending((record) => record.Score);
 
     public IEnumerator<Record> GetEnumerator()
     {

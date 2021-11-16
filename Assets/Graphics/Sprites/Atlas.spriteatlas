@@ -45,7 +45,7 @@ SpriteAtlas:
     packables:
     - {fileID: 102900000, guid: 0159909dec2088845b8649069eaad758, type: 3}
     - {fileID: 102900000, guid: 773cb74ebde476a49b4a3a0690a6c453, type: 3}
-    totalSpriteSurfaceArea: 1588427
+    totalSpriteSurfaceArea: 1646507
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
@@ -54,6 +54,7 @@ SpriteAtlas:
   - {fileID: 21300000, guid: 3085df914929d514480c4fc5e3b460fc, type: 3}
   - {fileID: 21300000, guid: 615183e3c013c3b4393fe6dc28493020, type: 3}
   - {fileID: 21300000, guid: 58495564b9f2e6c4c9fc4c660536a1c8, type: 3}
+  - {fileID: 21300000, guid: 89839f8546f9c9541b4c7ca74be78c8a, type: 3}
   - {fileID: 21300000, guid: 443c186a75c46514baaac5abd0a9bfe7, type: 3}
   - {fileID: 21300000, guid: 333a05acf117409499d70764ff21c829, type: 3}
   - {fileID: 21300000, guid: f07c3d5dc2fd1ad4993b37fee7b5293d, type: 3}
@@ -62,6 +63,7 @@ SpriteAtlas:
   - 2
   - 5
   - Pin
+  - WindowBackground
   - 6
   - 1
   - 3

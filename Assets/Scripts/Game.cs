@@ -1,16 +1,20 @@
 ﻿using System.Collections.Generic;
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 class Game : MonoBehaviour
 {
     [Header("References")]
+    [SerializeField] private Sound _sound;
     [SerializeField] private BalloonSpawner _spawner;
     [SerializeField] private ScorePresenter _scorePresenter;
-    [SerializeField] private Sound _sound;
+    [SerializeField] private InputWindow _inputWindow;
+    [SerializeField] private LeaderboardWindow _leaderboardWindow;
 
     private List<Balloon> _balloons;
     private ScoreKeeper _score;
+    private Saves _saves;
 
     private void Start()
     {
@@ -18,6 +22,9 @@ class Game : MonoBehaviour
 
         _score = new ScoreKeeper();
         _scorePresenter.Initialize(_score);
+        _scorePresenter.Show();
+
+        _saves = new Saves();
 
         _spawner.Spawned += OnBalloonSpawned;
         _spawner.StartSpawning();
@@ -60,8 +67,35 @@ class Game : MonoBehaviour
     private void OnLose()
     {
         _spawner.StopSpawning();
+        _scorePresenter.Hide();
 
         BlowBalloons();
+
+        _inputWindow.Show(OnInputName);
+    }
+    private void OnInputName(string name)
+    {
+        _inputWindow.Hide();
+
+        var record = new Record(name, _score.Value);
+        FinalGame(record);
+    }
+
+    private void FinalGame(Record record)
+    {
+        var save = _saves.Load();
+
+        save.Records.AddRecord(record);
+        _saves.Save(save);
+
+        _leaderboardWindow.Show(save.Records);
+
+        Invoke(nameof(Restart), 3f);
+    }
+    private void Restart()
+    {
+        var currentSceneIndex = gameObject.scene.buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
     }
 
     private void BlowBalloons()
