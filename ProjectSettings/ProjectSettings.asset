@@ -648,7 +648,8 @@ PlayerSettings:
   platformArchitecture: {}
   scriptingBackend: {}
   il2cppCompilerConfiguration: {}
-  managedStrippingLevel: {}
+  managedStrippingLevel:
+    Android: 0
   incrementalIl2cppBuild: {}
   suppressCommonWarnings: 1
   allowUnsafeCode: 0
