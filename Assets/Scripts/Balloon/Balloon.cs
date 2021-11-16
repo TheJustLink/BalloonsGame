@@ -5,7 +5,6 @@ using UnityEngine;
 using Lean.Touch;
 
 [RequireComponent(typeof(Animator))]
-[RequireComponent(typeof(AudioSource))]
 [RequireComponent(typeof(Rigidbody2D))]
 class Balloon : LeanSelectableByFingerBehaviour, IDamageable
 {
@@ -14,7 +13,6 @@ class Balloon : LeanSelectableByFingerBehaviour, IDamageable
     public event Action<Balloon> Destroying;
 
     private Animator _animator;
-    private AudioSource _audioSource;
     private Rigidbody2D _rigidbody;
     private Camera _camera;
 
@@ -26,7 +24,6 @@ class Balloon : LeanSelectableByFingerBehaviour, IDamageable
         base.Start();
 
         _animator = GetComponent<Animator>();
-        _audioSource = GetComponent<AudioSource>();
         _rigidbody = GetComponent<Rigidbody2D>();
         _camera = Camera.main;
 

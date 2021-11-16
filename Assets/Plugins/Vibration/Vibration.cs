@@ -148,7 +148,7 @@ public static class Vibration
 #if UNITY_ANDROID
 
             if ( AndroidVersion >= 26 ) {
-                long[] amplitudes;
+                // long[] amplitudes;
                 AndroidJavaObject createWaveform = vibrationEffect.CallStatic<AndroidJavaObject> ( "createWaveform", pattern, repeat );
                 vibrator.Call ( "vibrate", createWaveform );
 
